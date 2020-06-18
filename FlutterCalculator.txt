@@ -1,0 +1,415 @@
+import 'package:flutter/material.dart';
+
+final TextEditingController yazi = TextEditingController();
+final TextEditingController alt = TextEditingController();
+final TextEditingController ust = TextEditingController();
+final TextEditingController isaret = TextEditingController();
+final TextEditingController sonuc = TextEditingController();
+
+class hesap extends StatefulWidget {
+  const hesap({Key key}) : super(key: key);
+
+  @override
+  _hesapState createState() => _hesapState();
+}
+
+class _hesapState extends State<hesap> {
+  @override
+  var renk = Colors.white;
+  topla() async {
+    isaret.text = "+";
+    setState(() {
+      renk = Colors.black;
+    });
+
+    if (yazi.text.length == 0) {
+      ust.text = " RAKAM GİR ";
+      Future.delayed(const Duration(seconds: 3), () async {
+        sil();
+      });
+    } else if (ust.text.length == 0) {
+      ust.text = "  " + yazi.text;
+    } else if (alt.text.length == 0) {
+      alt.text = yazi.text;
+      sonuc.text =
+          (double.parse(ust.text) + double.parse(alt.text)).toStringAsFixed(0);
+    } else {
+      // yazi.clear();
+      isaret.clear();
+      ust.clear();
+      alt.clear();
+      sonuc.clear();
+      ust.text = yazi.text;
+    }
+
+    yazi.clear();
+    yazi.selection =
+        TextSelection.fromPosition(TextPosition(offset: yazi.text.length));
+  }
+
+  cikar() async {
+    isaret.text = "-";
+
+    setState(() {
+      renk = Colors.black;
+    });
+
+    if (yazi.text.length == 0) {
+      ust.text = " RAKAM GİR ";
+      Future.delayed(const Duration(seconds: 3), () async {
+        sil();
+      });
+    } else if (ust.text.length == 0) {
+      ust.text = "  " + yazi.text;
+    } else if (alt.text.length == 0) {
+      alt.text = yazi.text;
+      sonuc.text =
+          (double.parse(ust.text) - double.parse(alt.text)).toStringAsFixed(0);
+    } else {
+      isaret.clear();
+      ust.clear();
+      alt.clear();
+      sonuc.clear();
+      setState(() {
+        renk = Colors.white;
+      });
+      ust.text = yazi.text;
+    }
+
+    yazi.clear();
+    yazi.selection =
+        TextSelection.fromPosition(TextPosition(offset: yazi.text.length));
+  }
+
+  sil() {
+    yazi.clear();
+
+    isaret.clear();
+    ust.clear();
+    alt.clear();
+    sonuc.clear();
+    ust.text = yazi.text;
+    setState(() {
+      renk = Colors.white;
+    });
+    yazi.selection =
+        TextSelection.fromPosition(TextPosition(offset: yazi.text.length));
+  }
+
+  Widget build(BuildContext context) {
+    var yukseklik = MediaQuery.of(context).size.width; //Tasarım ayarları
+    yukseklik = yukseklik / 1.5;
+    return Scaffold(
+      body: ListView(
+        //Taşmalarda patlamasın diye
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: ust,
+                  enabled: false,
+                  showCursor: false,
+                  readOnly: true,
+                  style: TextStyle(fontSize: yukseklik / 5),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: isaret,
+                        enabled: false,
+                        showCursor: false,
+                        readOnly: true,
+                        style: TextStyle(fontSize: yukseklik / 5),
+                        textAlign: TextAlign.start,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 6,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: alt,
+                        enabled: false,
+                        showCursor: false,
+                        readOnly: true,
+                        style: TextStyle(fontSize: yukseklik / 5),
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Divider(//mayhemious
+                color: renk,
+                thickness: 5,
+                endIndent: 10,
+                indent: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: sonuc,
+                  enabled: false,
+                  showCursor: false,
+                  readOnly: true,
+                  style: TextStyle(fontSize: yukseklik / 5),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 1,
+                    child: FlatButton(
+                      child: Text(
+                        "+",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () => topla(),
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 6,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        autofocus: true,
+                        controller: yazi,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                              width: 5,
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 1,
+                    child: FlatButton(
+                      child: Text(
+                        "-",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () => cikar(),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "1",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "1";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(
+                                offset: yazi.text
+                                    .length)); //Cursor ekranın solunda kalsın
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "2",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "2";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "3",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "3";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "4",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "4";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "5",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "5";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "6",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "6";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "7",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "7";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "8",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "8";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "9",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "9";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "=",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () => isaret.text == "+" ? topla() : cikar(),
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "0",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () {
+                        yazi.text = yazi.text + "0";
+                        yazi.selection = TextSelection.fromPosition(
+                            TextPosition(offset: yazi.text.length));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: FlatButton(
+                      child: Text(
+                        "Sil",
+                        style: TextStyle(fontSize: yukseklik / 5),
+                      ),
+                      onPressed: () => sil(),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
